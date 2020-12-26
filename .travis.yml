@@ -1,23 +1,24 @@
 sudo: required
+language: generic
+
 services:
   - docker
 
-defore_install:
-  - docker build -t regular/react-test -f ./client/Dockerfile.dev ./client
+before_install:
+  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run regular/react-test nmp test -- --coverage
+  - docker run -e CI=true stephengrider/react-test npm test
 
 after_success:
-  - docker build -t regular/multi-client ./client
-  - docker bulid -t regular/multi-nginx ./nginx
-  - docker build -t regular/multi-server ./server
-  - docker build -t regular/multi-worker ./worker
-  # log in to the docker CLI
+  - docker build -t stephengrider/multi-client ./client
+  - docker build -t stephengrider/multi-nginx ./nginx
+  - docker build -t stephengrider/multi-server ./server
+  - docker build -t stephengrider/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # take those images and push them to docker hub
-  - docker push regular/multi-client
-  - docker push regular/multi-nginx
-  - docker push regular/multi-server
-  - docker push regular/multi-worker
-  
+  # Take those images and push them to docker hub
+  - docker push stephengrider/multi-client
+  - docker push stephengrider/multi-nginx
+  - docker push stephengrider/multi-server
+  - docker push stephengrider/multi-worker
